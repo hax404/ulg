@@ -298,7 +298,14 @@ class BirdShowRouteCommand(AbstractRouteTableCommand):
     def __init__(self,router,name=None):
         ulgmodel.TextCommand.__init__(self,self.COMMAND_TEXT,param_specs=[
                 router.getRoutingTableSelect(),
-#                ulgmodel.TextParameter(pattern=IPV46_SUBNET_REGEXP,name=defaults.STRING_IPSUBNET),
+                ],name=name)
+
+class BirdShowRouteFilteredCommand(AbstractRouteTableCommand):
+    COMMAND_TEXT = 'show route table %s filtered'
+
+    def __init__(self,router,name=None):
+        ulgmodel.TextCommand.__init__(self,self.COMMAND_TEXT,param_specs=[
+                router.getRoutingTableSelect(),
                 ],name=name)
 
 class BirdShowRouteForCommand(AbstractRouteTableCommand):
@@ -408,6 +415,7 @@ class BirdRouter(ulgmodel.Router):
         sh_proto_export = BirdShowRouteExportCommand(self)
         return [BirdShowProtocolsCommand(show_proto_all_command=sh_proto_all, proto_filter = self.proto_fltr),
                 BirdShowRouteCommand(self),
+                BirdShowRouteFilteredCommand(self),
                 BirdShowRouteForCommand(self),
                 sh_proto_all,
                 sh_proto_route,
