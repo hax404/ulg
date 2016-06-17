@@ -127,7 +127,7 @@ def parseBirdShowProtocols(text):
     for l in str.splitlines(text):
         if(re.match('^\s*$',l)):
             continue
-        
+
         hm = re.match(BIRD_SHOW_PROTO_HEADER_REGEXP,l)
         if(hm):
             header = hm.groups()
@@ -308,6 +308,12 @@ class BirdShowRouteProtocolCommand(BirdShowRouteCommand):
     def __init__(self,router,name=None):
         ulgmodel.TextCommand.__init__(self,self.COMMAND_TEXT,param_specs=[router.getRoutingTableSelect(),router.getBGPPeerSelect()],name=name)
 
+class BirdShowRouteProtocolFilteredCommand(BirdShowRouteCommand):
+    COMMAND_TEXT = 'show route table %s protocol %s filtered'
+
+    def __init__(self,router,name=None):
+        ulgmodel.TextCommand.__init__(self,self.COMMAND_TEXT,param_specs=[router.getRoutingTableSelect(),router.getBGPPeerSelect()],name=name)
+
 
 class BirdShowRouteAllCommand(ulgmodel.TextCommand):
     COMMAND_TEXT = 'show route table %s all for %s'
@@ -320,7 +326,7 @@ class BirdShowRouteAllCommand(ulgmodel.TextCommand):
                                       name=name)
 
     def decorateResult(self,session,decorator_helper=None):
-        def decorateLine(l):			
+        def decorateLine(l):
             m = bird_sh_route_all_ases_regexp.match(l)
             if(m):
                 r = m.group(1)
@@ -339,7 +345,7 @@ class BirdShowRouteAllCommand(ulgmodel.TextCommand):
         r=''
         for sl in s:
             r += decorateLine(sl) + "\n"
-            
+
         return ("<pre>\n%s\n</pre>" % r, len(s))
 
 
@@ -389,11 +395,13 @@ class BirdRouter(ulgmodel.Router):
     def _getDefaultCommands(self):
         sh_proto_all = BirdShowProtocolsAllCommand(self)
         sh_proto_route = BirdShowRouteProtocolCommand(self)
+        sh_proto_route_filtered = BirdShowRouteProtocolFilteredCommand(self)
         sh_proto_export = BirdShowRouteExportCommand(self)
         return [BirdShowProtocolsCommand(show_proto_all_command=sh_proto_all, proto_filter = self.proto_fltr),
                 BirdShowRouteCommand(self),
                 sh_proto_all,
                 sh_proto_route,
+                sh_proto_route_filtered,
                 sh_proto_export,
                 BirdShowRouteAllCommand(self),
                 BirdGraphShowRouteAll(self),
@@ -664,12 +672,12 @@ class BirdRouterRemote(ulgmodel.RemoteRouter,BirdRouter):
         key_bgp = self.getHost() + self.getName() + self.PS_KEY_BGP
         key_rt = self.getHost() + self.getName() + self.PS_KEY_RT
 
-        
+
         ps = ulgmodel.loadPersistentStorage()
         ps.set(key_bgp,self.getBGPPeers())
         ps.set(key_rt,self.getRoutingTables())
         ps.save()
-               
+
     def loadPersistentInfo(self):
         key_bgp = self.getHost() + self.getName() + self.PS_KEY_BGP
         key_rt = self.getHost() + self.getName() + self.PS_KEY_RT
