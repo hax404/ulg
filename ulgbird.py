@@ -293,6 +293,15 @@ class BirdShowRouteExportCommand(AbstractBGPPeerSelectCommand,AbstractRouteTable
     COMMAND_TEXT = 'show route export %s'
 
 class BirdShowRouteCommand(AbstractRouteTableCommand):
+    COMMAND_TEXT = 'show route table %s'
+
+    def __init__(self,router,name=None):
+        ulgmodel.TextCommand.__init__(self,self.COMMAND_TEXT,param_specs=[
+                router.getRoutingTableSelect(),
+#                ulgmodel.TextParameter(pattern=IPV46_SUBNET_REGEXP,name=defaults.STRING_IPSUBNET),
+                ],name=name)
+
+class BirdShowRouteForCommand(AbstractRouteTableCommand):
     COMMAND_TEXT = 'show route table %s for %s'
 
     def __init__(self,router,name=None):
@@ -302,13 +311,13 @@ class BirdShowRouteCommand(AbstractRouteTableCommand):
                 ],name=name)
 
 
-class BirdShowRouteProtocolCommand(BirdShowRouteCommand):
+class BirdShowRouteProtocolCommand(BirdShowRouteForCommand):
     COMMAND_TEXT = 'show route table %s protocol %s'
 
     def __init__(self,router,name=None):
         ulgmodel.TextCommand.__init__(self,self.COMMAND_TEXT,param_specs=[router.getRoutingTableSelect(),router.getBGPPeerSelect()],name=name)
 
-class BirdShowRouteProtocolFilteredCommand(BirdShowRouteCommand):
+class BirdShowRouteProtocolFilteredCommand(BirdShowRouteForCommand):
     COMMAND_TEXT = 'show route table %s protocol %s filtered'
 
     def __init__(self,router,name=None):
@@ -399,6 +408,7 @@ class BirdRouter(ulgmodel.Router):
         sh_proto_export = BirdShowRouteExportCommand(self)
         return [BirdShowProtocolsCommand(show_proto_all_command=sh_proto_all, proto_filter = self.proto_fltr),
                 BirdShowRouteCommand(self),
+                BirdShowRouteForCommand(self),
                 sh_proto_all,
                 sh_proto_route,
                 sh_proto_route_filtered,
