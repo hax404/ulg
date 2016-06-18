@@ -6,7 +6,7 @@
     ${before}
   </py:if>
   <py:if test="defined('table_header') and defined('table') and len(table_header) > 0 and len(table) > 0">
-    <table border="1">
+    <table class="sortable" border="1">
       <tr>
 	<py:for each="thidx,th in enumerate(table_header)">
 	  <th class="col${thidx}">${th}</th>

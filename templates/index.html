@@ -5,6 +5,7 @@
     <title>Universal Looking Glass</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" href="style.css" />
+		<script src="sorttable.js"></script>
 
 <script type="text/javascript">var NREUMQ=NREUMQ||[];NREUMQ.push(["mark","firstbyte",new Date().getTime()]);</script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -114,7 +115,7 @@
   </head>
   <body class="index">
     <script>
-      window.onload=updateFormCommands; 
+      window.onload=updateFormCommands;
     </script>
     <div id="wrapper">
     <div id="header">
@@ -160,7 +161,7 @@
 <fieldset>
 
 
-	    <label for="commandselect">2. Command selection:</label> 
+	    <label for="commandselect">2. Command selection:</label>
 	      <select id="commandselect" name="commandid" onchange="updateFormParams()">
 	      </select>
 
@@ -170,7 +171,7 @@
 	</div>
 
 <fieldset id="submit-">
-<label>&nbsp;</label> 
+<label>&nbsp;</label>
               <input type="submit" value="Submit" />
 </fieldset>
 </div>
@@ -201,10 +202,10 @@
 	      <py:for each="rb in resrangeb[:-1]">
 		<py:choose>
 		  <py:when test="rb[1]">
-		    <a href="${rb[1]}">${rb[0]}</a> | 
+		    <a href="${rb[1]}">${rb[0]}</a> |
 		  </py:when>
 		  <py:otherwise>
-		    ${rb[0]} | 
+		    ${rb[0]} |
 		  </py:otherwise>
 		</py:choose>
 	      </py:for>
